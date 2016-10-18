@@ -32,7 +32,6 @@ public:
 			else return b.Size;
   }
   */
-  TVector() {};
   TVector(int s = 10, int si = 0); 
   TVector(const TVector &v);                // конструктор копирования
   ~TVector();
@@ -71,19 +70,13 @@ public:
 template <class ValType>
 TVector<ValType>::TVector(int s, int si)
 {
-
-	if (s < 1 || s > MAX_VECTOR_SIZE)
+	if ((s < 1) || (s > MAX_VECTOR_SIZE))
 		throw s;
-	if (si < 0 || si > MAX_VECTOR_SIZE)
+	if ((si < 0) || (si >= MAX_VECTOR_SIZE))
 		throw si;
-	pVector = new ValType[Size];
 	Size = s;
 	StartIndex = si;
-	if (pVector != 0)
-		for (register int i = 0; i < Size; i++)
-			pVector[i] = 0;
-
-
+	pVector = new ValType[Size];
 } /*-------------------------------------------------------------------------*/
 
 template <class ValType> //конструктор копирования
@@ -91,8 +84,8 @@ TVector<ValType>::TVector(const TVector<ValType> &v)
 {
 	Size = v.Size;
 	StartIndex = v.StartIndex;
-	pVector = new ValType[v.Size];
-	for(register int i=0;i<v.Size;i++)
+	pVector = new ValType[Size];
+	for(register int i=0;i<Size;i++)
 		pVector[i]=v.pVector[i];
 } /*-------------------------------------------------------------------------*/
 
@@ -116,21 +109,18 @@ bool TVector<ValType>::operator==(const TVector &v) const
 {
 	if (v.Size != Size)  return false;
 	if (v.StartIndex != StartIndex) return false;
-	else
-	{
 		for (register int i = 0; i < Size; i++)
 		{
-			if v.pVector[i] != v.pVector[i] return false;
+			if (pVector[i] != v.pVector[i]) return false;
 		}
-	}
 	return true;
 } /*-------------------------------------------------------------------------*/
 
 template <class ValType> // сравнение
 bool TVector<ValType>::operator!=(const TVector &v) const
 {
-	if v == *this
-		return false 
+	if (v == *this)
+		return false;
 	else 
 		return true;
 } /*-------------------------------------------------------------------------*/
@@ -138,13 +128,16 @@ bool TVector<ValType>::operator!=(const TVector &v) const
 template <class ValType> // присваивание
 TVector<ValType>& TVector<ValType>::operator=(const TVector &v)
 {
-	if ((Size != v.Size) && (StartIndex!=v.StartIndex))
+	if (*this != v)
 	{
-		Size = v.Size;
-		StartIndex = v.StartIndex;
-		delete[] pVector;
-		pVector = 0;
-		pVector = new ValType[Size];
+		if ((Size != v.Size) && (StartIndex != v.StartIndex))
+		{
+			Size = v.Size;
+			StartIndex = v.StartIndex;
+			delete[] pVector;
+			pVector = 0;
+			pVector = new ValType[Size];
+		}
 	}
 	for (register int i = 0; i < Size; i++)
 		pVector[i] = v.pVector[i];
