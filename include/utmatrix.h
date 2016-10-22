@@ -70,9 +70,9 @@ public:
 template <class ValType>
 TVector<ValType>::TVector(int s, int si)
 {
-	if ((s < 1) || (s >= MAX_VECTOR_SIZE))
+	if ((s < 1) || (s > MAX_VECTOR_SIZE))
 		throw s;
-	if ((si < 0) || (si >= MAX_VECTOR_SIZE))
+	if ((si < 0) || (si >= s))
 		throw si;
 	Size = s;
 	StartIndex = si;
@@ -100,7 +100,8 @@ template <class ValType> // доступ
 ValType& TVector<ValType>::operator[](int pos)
 {
 	if ((pos - StartIndex >= 0) && (pos - StartIndex < Size))
-		return pVector[pos - StartIndex]; else throw(pos);
+		return pVector[pos - StartIndex]; 
+	else throw(pos);
 } /*-------------------------------------------------------------------------*/
 
 template <class ValType> // сравнение
@@ -132,7 +133,6 @@ TVector<ValType>& TVector<ValType>::operator=(const TVector &v)
 		if (Size != v.Size)
 		{
 			delete[] pVector;
-			pVector = 0;
 			pVector = new ValType[v.Size];
 		}
 		Size = v.Size;
@@ -141,7 +141,6 @@ TVector<ValType>& TVector<ValType>::operator=(const TVector &v)
 		pVector[i] = v.pVector[i];
 	}
 	return *this;
-
 } /*-------------------------------------------------------------------------*/
 
 template <class ValType> // прибавить скаляр
