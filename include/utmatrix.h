@@ -70,7 +70,7 @@ public:
 template <class ValType>
 TVector<ValType>::TVector(int s, int si)
 {
-	if ((s < 1) || (s > MAX_VECTOR_SIZE))
+	if ((s < 1) || (s >= MAX_VECTOR_SIZE))
 		throw s;
 	if ((si < 0) || (si >= MAX_VECTOR_SIZE))
 		throw si;
@@ -99,9 +99,8 @@ TVector<ValType>::~TVector()
 template <class ValType> // доступ
 ValType& TVector<ValType>::operator[](int pos)
 {
-	if (pos<0 || pos>Size)
-		throw pos;
-	return pVector[abs(pos - StartIndex)]; //if pos<SI
+	if ((pos - StartIndex >= 0) && (pos - StartIndex < Size))
+		return pVector[pos - StartIndex]; else throw(pos);
 } /*-------------------------------------------------------------------------*/
 
 template <class ValType> // сравнение
@@ -132,12 +131,12 @@ TVector<ValType>& TVector<ValType>::operator=(const TVector &v)
 	{
 		if (Size != v.Size)
 		{
-			Size = v.Size;
-			StartIndex = v.StartIndex;
 			delete[] pVector;
 			pVector = 0;
-			pVector = new ValType[Size];
+			pVector = new ValType[v.Size];
 		}
+		Size = v.Size;
+		StartIndex = v.StartIndex;
 	for (register int i = 0; i < Size; i++)
 		pVector[i] = v.pVector[i];
 	}
@@ -237,7 +236,7 @@ template <class ValType>
 TMatrix<ValType>::TMatrix(int s) : TVector<TVector<ValType> >(s)
 {
 	//Size = s;
-	if (s<1 || s>MAX_MATRIX_SIZE) throw s;
+	if (s>MAX_MATRIX_SIZE) throw s;
 	for (register int i = 0; i < s; i++)
 	{
 		pVector[i] = TVector<ValType>(s - i, i);
@@ -273,21 +272,16 @@ bool TMatrix<ValType>::operator!=(const TMatrix<ValType> &mt) const
 template <class ValType> // присваивание
 TMatrix<ValType>& TMatrix<ValType>::operator=(const TMatrix<ValType> &mt)
 {
-	StartIndex = mt.StartIndex;
+	
 	if (Size != mt.Size)
 	{
 		delete[] pVector;
-		Size = mt.Size;
-		pVector = new TVector<ValType>[Size];
-		for (register int i = 0; i < Size; i++)
-		{
-			pVector[i] = mt.pVector[i];
-		}
+		pVector = new TVector<ValType>[mt.Size];
 	}
+	Size = mt.Size;
+	StartIndex = mt.StartIndex;
 	for (register int i = 0; i < Size; i++)
-	{
 		pVector[i] = mt.pVector[i];
-	}
 	return *this;
 } /*-------------------------------------------------------------------------*/
 
