@@ -149,11 +149,10 @@ TEST(TVector, can_subtract_scalar_from_vector)
 
 TEST(TVector, can_multiply_scalar_by_vector)
 {
-	TVector<int> v(2, 0);
-	v[0] = 1;
-	v[0] *=7;
-	EXPECT_EQ(v[0], 7);
-
+	TVector<int> v(2, 0),v1(2,0);
+	v[0]=v[1] = 1;
+	v1[0] = v1[1] = 7;
+	EXPECT_EQ(v1, v*7);
 }
 
 TEST(TVector, can_add_vectors_with_equal_size)
